@@ -1,0 +1,40 @@
+//********************************************************* 
+//	Error_Service.hpp - Summarize Error Messages
+//*********************************************************
+
+#ifndef ERROR_SERVICE_HPP
+#define ERROR_SERVICE_HPP
+
+#include "Static_Service.hpp"
+
+//---------------------------------------------------------
+//	Error_Service Class definition
+//---------------------------------------------------------
+
+class  Error_Service : public Static_Service
+{
+public:
+	enum Error_Type {TOTAL_ERROR, PATH_ERROR, TIME_ERROR, NODE_ERROR, TYPE_ERROR, DIST_ERROR, MODE_ERROR, 
+		ACCESS_ERROR, WALK_ERROR, WAIT_ERROR, LINK_ERROR, SIZE_ERROR, PARK_ERROR, BIKE_ERROR, 
+		DEPARTURE_ERROR, ARRIVAL_ERROR, LINK_ACCESS_ERROR, CONNECT_ERROR, PARKING_ERROR, 
+		MERGE_ERROR, LANE_ERROR, TURN_ERROR, POCKET_ERROR, SPACING_ERROR, CONTROL_ERROR, 
+		LANE_ACCESS_ERROR, MAX_ERROR};
+
+	Error_Service (int max_errors = 0);
+	~Error_Service (void);
+
+	void Max_Errors (int _max_errors)	{ max_errors = _max_errors; };
+	int  Max_Errors (void)				{ return (max_errors); };
+
+	int  Num_Errors (void)				{ return (num_error [TOTAL_ERROR]); };
+
+	int  Set_Error (Error_Type error);
+
+	void Report_Errors (void);
+
+private:
+	int	  max_errors;
+	int   num_error [MAX_ERROR];
+};
+
+#endif

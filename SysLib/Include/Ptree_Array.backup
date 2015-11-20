@@ -1,0 +1,62 @@
+//*********************************************************
+//	Ptree_Array.hpp - preference tree data array
+//*********************************************************
+
+#ifndef PTREE_ARRAY_HPP
+#define PTREE_ARRAY_HPP
+
+#include "Data_Array.hpp"
+
+//---------------------------------------------------------
+//	Ptree_Array Class definition
+//---------------------------------------------------------
+
+class Ptree_Array : public Data_Array
+{
+public:
+	Ptree_Array (int record_size = sizeof (unsigned), int num_keys = 1, bool pointer_flag = false, int max_records = 0, int block_size = 0);
+	virtual ~Ptree_Array (void);
+
+	bool Initialize (int record_size, int num_keys = 1, bool pointer_flag = false, int max_records = 0, int block_size = 0);
+
+	virtual bool Add (void *data);
+	virtual void * Record (int record);
+
+	virtual int  Record_Size (void);
+	virtual void Record_Size (int size);
+
+	int Get_Index (void *data);
+
+	void * Get (void *data)			{ return (Record (Get_Index (data))); }
+	void * Get_GE (void *data);
+	void * Get_LE (void *data);
+
+	void * First_Key (void);
+	void * Next_Key (void);
+
+	void Delete_Pointers (void);
+
+	int  Num_Keys (void)			{ return (num_keys); }
+	bool Pointer_Flag (void)		{ return (pointer_flag); }
+    
+private:
+	typedef struct {
+		int higher;
+		int lower;
+		union {
+			unsigned data [1];
+			unsigned *ptr;
+		};
+	} Ptree_Element;
+
+	Ptree_Element *element;
+
+	bool pointer_flag;
+	int data_size, num_keys, root;
+
+	int CutLower (int current_record, unsigned *key);
+	int CutHigher (int current_record, unsigned *key);
+
+	bool CheckPrec (unsigned *key, unsigned *cur_key);
+};
+#endif

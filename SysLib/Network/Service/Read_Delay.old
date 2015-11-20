@@ -1,0 +1,167 @@
+//*********************************************************
+//	Read_Delay.cpp - read the link delay file
+//*********************************************************
+
+#include "Network_Service.hpp"
+#include "Delay_File.hpp"
+
+//---------------------------------------------------------
+//	Read_Delay
+//---------------------------------------------------------
+
+void Network_Service::Read_Delay (void)
+{
+	int i, nperiod, period, link, dir, volume, time, vol;
+	bool flag;
+
+	Dir_Data *dir_ptr;
+
+	Db_File *file = Network_Db_File (LINK_DELAY);
+
+	//---- check for required data ----
+
+	if (link_data.Num_Records () <= 0) {
+		Error ("Link Data are required for Link Delay data processing");
+	}
+
+	//---- store the link delay data ----
+
+	Show_Message ("Reading %s -- Record", file->File_Type ());
+	Set_Progress (10000);
+
+	First_Record (true);
+
+	while (file->Read ()) {
+		Show_Progress ();
+
+		Delay_Processing (file);
+
+		First_Record (false);
+	}
+	End_Progress ();
+	file->Close ();
+
+	Print (2, "Number of Link Delay Records = %d", Progress_Count ());
+
+	//if (nerror) {
+	//	Write (1, "Number of Link Delay Processing Errors = %d", nerror);
+	//	if (nerror > max_delay_errors) Error ("Maximum Number of Link Delay Errors Exceeded");
+	//}
+
+	//---- calculate the travel times ----
+
+	link = dir = volume = period = 0;
+nperiod = i = vol = time = 0;
+
+	for (dir_ptr = dir_data.First (); dir_ptr != NULL; dir_ptr = dir_data.Next ()) {
+		flag = false;
+		//nperiod = dir_ptr->Periods ();
+
+		//for (i=1; i <= nperiod; i++) {
+		//	vol = dir_ptr->Volume (i);
+  //          if (vol > 0) {
+		//		time = dir_ptr->TTime (i);
+
+		//		time = (time + (vol >> 1)) / vol;
+		//		if (time < 1) time = 1;
+
+		//		dir_ptr->TTime (i, time);
+
+		//		volume++;
+		//		flag = true;
+		//	} else {
+		//		dir_ptr->TTime (i, dir_ptr->Time0 ());
+		//	}
+		//	period++;
+		//}
+		if (flag) dir++;
+		link++;
+	}
+	Print (1, "Percent of Link Directions with Travel Time Data = %.1lf%%", 
+				((link) ? dir * 100.0 / link : 0.0));
+	Print (1, "Percent of Link Time Periods with Travel Time Data = %.1lf%%", 
+				((period) ? volume * 100.0 / period : 0.0));
+}
+
+//---------------------------------------------------------
+//	Delay_Processing
+//---------------------------------------------------------
+
+bool Network_Service::Delay_Processing (Db_File *fh)
+{
+	//int tod, period, link, node, dir, volume, seconds, vol;
+	//double ttim;
+
+	//Link_Data *link_ptr;
+	//Dir_Data *dir_ptr;
+
+	//Delay_File *file = (Delay_File *) fh;
+
+//	//---- read and save the data ----
+//
+//	tod = file->Time ();
+//
+//	if (tod == 0) return (false);
+//
+//	period = Time_Period (tod - 1);		//---- subtract 1 to adjust end time ---
+//
+//	if (period == 0) return (false);
+//
+//	volume = file->Volume ();
+//
+//	if (volume == 0) return (false);
+//
+//	link = file->Link ();
+//	node = file->Node ();
+//	ttim = file->TTime ();
+//
+//	seconds = Round (ttim);
+//
+//	//---- locate the link ----
+//
+//	link = link_data.Get_Index (link);
+//
+//	if (link == 0) goto error_check;
+//
+//	if (Renumber ()) {
+//		node = node_data.Get_Index (node);
+//
+//		if (node == 0) goto error_check;
+//	}
+//
+//	//---- store the data ----
+//
+//	link_ptr = link_data [link);
+//
+//	if (link_ptr->Anode () == node) {
+//		dir = link_ptr->AB_Dir ();
+//	} else if (link_ptr->Bnode () == node) {
+//		dir = link_ptr->BA_Dir ();
+//	} else {
+//		goto error_check;
+//	}
+//	if (dir == 0) goto error_check;
+//
+//	dir_ptr = dir_data [dir);
+//
+//	if (dir_ptr->Periods () == 0) {
+//		if (!dir_ptr->Periods (dir_data.Periods (), dir_data.Layers ())) {
+//			Error ("Insufficient Memory for Link Delay Data");
+//		}
+//	}
+//	vol = dir_ptr->Volume (period);
+//
+//	if (vol == 0) {
+//		dir_ptr->TTime (period, seconds);
+//		dir_ptr->Volume (period, volume);
+//	} else {
+//		dir_ptr->Add_TTime (period, seconds);
+//		dir_ptr->Add_Volume (period, volume);
+//	}
+//	return (true);
+//
+//error_check:
+//	//if (++nerror > max_delay_errors) {
+//	//}
+	return (false);
+}

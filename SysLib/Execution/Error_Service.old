@@ -1,0 +1,147 @@
+//*********************************************************
+//	Error_Service.cpp - Summarize Error Messages
+//*********************************************************
+
+#include "Error_Service.hpp"
+
+#include "string.h"
+
+//---------------------------------------------------------
+//	Error_Service constructor with parameters
+//---------------------------------------------------------
+
+Error_Service::Error_Service (int _max_errors) : Static_Service ()
+{
+	Max_Errors (_max_errors);
+
+	memset (num_error, '\0', sizeof (num_error));
+}
+
+//---------------------------------------------------------
+//	Error_Service destructor
+//---------------------------------------------------------
+
+Error_Service::~Error_Service (void)
+{
+}
+
+//---------------------------------------------------------
+//	Set_Error
+//---------------------------------------------------------
+
+int Error_Service::Set_Error (Error_Type error)
+{
+	if (error < MAX_ERROR) {
+		num_error [error]++;
+		num_error [0]++;
+	}
+	if ((num_error [0] > max_errors && max_errors > 0) || error == MAX_ERROR) {
+		Report_Errors ();
+		if (report != NULL) report->Error ("Maximum Number of Problems Exceeded");
+	}
+	return (error);
+}
+
+//---------------------------------------------------------
+//	Report_Errors
+//---------------------------------------------------------
+
+void Error_Service::Report_Errors (void)
+{
+	int i, num;
+	char *error;
+
+	if (num_error [0] == 0 || report == NULL) return;
+
+	for (i=1, num=2; i < MAX_ERROR; i++) {
+		if (num_error [i] > 0) num++;
+	}
+	report->Break_Check (num);
+
+	report->Write (2, "Total Number of Problems = %d", num_error [0]);
+
+	for (i=1; i < MAX_ERROR; i++) {
+		num = num_error [i];
+
+		if (num > 0) {
+			switch (i) {
+				case PATH_ERROR:
+					error = "Path Building";
+					break;
+				case TIME_ERROR:
+					error = "Time Schedule";
+					break;
+				case NODE_ERROR:
+					error = "Zero Node";
+					break;
+				case TYPE_ERROR:
+					error = "Vehicle Type";
+					break;
+				case DIST_ERROR:
+					error = "Path Circuity";
+					break;
+				case MODE_ERROR:
+					error = "Travel Mode";
+					break;
+				case ACCESS_ERROR:
+					error = "Vehicle Access";
+					break;
+				case WALK_ERROR:
+					error = "Walk Distance";
+					break;
+				case WAIT_ERROR:
+					error = "Wait Time";
+					break;
+				case LINK_ERROR:
+					error = "Walk Access";
+					break;
+				case SIZE_ERROR:
+					error = "Path Size";
+					break;
+				case PARK_ERROR:
+					error = "Park-&-Ride Lot";
+					break;
+				case BIKE_ERROR:
+					error = "Bike Distance";
+					break;
+				case DEPARTURE_ERROR:
+					error = "Departure Time";
+					break;
+				case ARRIVAL_ERROR:
+					error = "Arrival Time";
+					break;
+				case LINK_ACCESS_ERROR:
+					error = "Link Access";
+					break;
+				case CONNECT_ERROR:
+					error = "Lane Connectivity";
+					break;
+				case PARKING_ERROR:
+					error = "Parking Access";
+					break;
+				case MERGE_ERROR:
+					error = "Lane Merging";
+					break;
+				case LANE_ERROR:
+					error = "Lane Changing";
+					break;
+				case TURN_ERROR:
+					error = "Turning Speed";
+					break;
+				case POCKET_ERROR:
+					error = "Pocket Merge";
+					break;
+				case SPACING_ERROR:
+					error = "Vehicle Spacing";
+					break;
+				case CONTROL_ERROR:
+					error = "Traffic Control";
+					break;
+				case LANE_ACCESS_ERROR:
+					error = "Access Restriction";
+					break;
+			}
+			report->Write (1, "Number of %s Problems = %d", error, num);
+		}
+	}
+}

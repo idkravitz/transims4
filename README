@@ -1,0 +1,85 @@
+
+README for the TRANMSIMS Compilation on Linux
+=============================================
+
+Last Modified: Jun 19, 2007
+      Summary: Much improved MakeExeCppList and MakeLibCppList scripts
+Last Modified: Jul 24, 2007
+      Summary: Added a transims.spec.in file so that the version number
+               is automatically substituted in transims.spec. Added the
+               standard set of files for autoconf: ChangeLog, INSTALL,
+               COPY, AUTHORS, NEWS. They are all empty at this time.
+               Also, this file was renamed from README.linux to README.
+Last Modified: Jul 24, 2007
+      Summary: The creation of all the Makefiles has been simplified
+               so that everything is automatically created from
+               the current Transims40.sln and the individual .vcproj
+               files. The script is named CreateLinuxBuildEnv.csh,
+               documented below.
+
+Quick Start
+===========
+
+To compile the sources, use the steps that are usually taken for source
+code trees prepared with the "autotools", meaning:
+
+1.) execute the "./configure" script to evaluate system dependencies
+2.) run a "make" in this directory
+
+This will build a release as well as a debug version of TRANSIMS,
+and places the executables in the directories "Bin" and "Debug"
+respectively.
+
+Reconfiguring the Build Environment
+===================================
+
+This chapter describes briefly how to use the "autotools" to create a
+portable TRANSIMS source tree for distribution. If you are simply compiling
+TRANSIMS on your platform, the only information you need has been described
+in the section "Quick Start" at the beginning of this document.
+
+First, install the set of utilities that make up the "autotools", in particular
+the "autoconf", "automake", and "libtool" packages.
+
+The versions used currently are autoconf 2.59, automake 1.9.2, and
+libtool 1.5.6. The autotools are tricky when it comes to interoperability
+between different versions, so if you want to make modifications to the
+source tree structure, it is strongly recommended to use the above versions.
+
+To create all files used by the build environment, including "configure.in",
+execute CreateLinuxBuildEnv.csh. If no parameter is specified, the current
+date is being used as the minor version number, e.g. 4.0.070724. After
+execution of this script, "autoreconf" needs to be called, followed by the
+usual "./configure", "make", and "make dist". This is all that needs
+to be done to compile everything and create the tarball for distribution.
+
+Distribution of tarballs
+========================
+
+Once all these files have been created by CreateLinuxBuildEnv.csh,
+the user should run "autoreconf" in the root directory to create
+everything needed by the environment. Then the source tree should
+be cleaned by running a "make distclean" before distribution to
+others. A "make clean" can be used to delete all intermediate files,
+followed by a "make" to build everything. The preferred way to
+create redistributables is to "make dist", creating a properly
+versioned tar ball file (see next paragraph))
+
+The structure is set up to create distributable source tarballs
+and possibly source and binary RPMs of the TRANSIMS software.
+After verifying that everything compiles properly and is working well,
+run the command "make dist". This will create a tarball with the name
+of the release. This tarball contains only the source files necessary
+for distribution, and not the SVN framwork or other files in the source
+file archive.
+
+The tarball can then be turned into RPMs using "rpmbuild". This
+procedure is not complicated, but depends on the availabe hardware.
+A sample "BuildRPM.csh" is provided to demonstrate the basic
+procedure. This will only run correctly in the highly
+specific environment at Argonne, but shows the basic principles.
+
+Please direct comments and questions to "hley@anl.gov".
+
+Hubert Ley
+July 2007
